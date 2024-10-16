@@ -11,7 +11,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
+//@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 public class Category {
@@ -20,6 +20,9 @@ public class Category {
     private Long id;
     private String name;
 
+    public Category(String name) {
+        this.name = name;
+    }
 
     @OneToMany(mappedBy = "category")
     private List<Product> products;

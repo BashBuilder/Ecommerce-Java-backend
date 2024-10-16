@@ -6,6 +6,7 @@ import com.emmorce.dreamshops.model.Product;
 import com.emmorce.dreamshops.repositoty.CategoryRepository;
 import com.emmorce.dreamshops.repositoty.ProductRepository;
 import com.emmorce.dreamshops.request.AddProductRequest;
+import com.emmorce.dreamshops.request.ProductUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +22,6 @@ public class ProductService implements IProductService {
 
     @Override
     public Product addProduct(AddProductRequest request) {
-        // check if the category is found in the database
-        // if yes set it as the new product category
-        // but if no then save it as a new category
-        // then set as the new product category
         Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
             .orElseGet(() -> {
                 Category newCategory = new Category(request.getCategory().getName());
@@ -57,14 +54,28 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public void updateProduct(Product product, long prodcutId) {
+    public Product updateProduct(ProductUpdateRequest request, long productId) {
+        return productRepository.findById(productId)
+                .map(existingProduct -> updateExistingProduct(existingProduct, request))
+                .map(productRepository :: save)
+                .orElseThrow( () -> new ProductNotFoundException("Product not found") );
+    }
 
+    private Product updateExistingProduct(Product existingProduct, ProductUpdateRequest request) {
+        existingProduct.setName(request.getName());
+        existingProduct.setDescription(request.getDescription());
+        existingProduct.setPrice(request.getPrice());
+        existingProduct.setInventory(request.getInventory());
+        existingProduct.setBrand(request.getBrand());
+        existingProduct.setCategory(categoryRepository.findByName(request.getCategory().getName()));
+        return productRepository.save(existingProduct);
     }
 
     @Override
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
+
 
     @Override
     public List<Product> getAllProductsByCategory(String category) {

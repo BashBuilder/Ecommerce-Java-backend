@@ -52,4 +52,5 @@ public class ImageController {
             throw new RuntimeException(e.getMessage());
         }
     }
+//    just some commit message
 }

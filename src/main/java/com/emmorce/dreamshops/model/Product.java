@@ -1,7 +1,6 @@
 package com.emmorce.dreamshops.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,12 +23,11 @@ public class Product {
     private int inventory;
     private String brand;
 
-
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name ="category_id")
+    @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToMany(mappedBy="product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images;
 
     public Product(String name, String description, BigDecimal price, int inventory, String brand, Category category) {

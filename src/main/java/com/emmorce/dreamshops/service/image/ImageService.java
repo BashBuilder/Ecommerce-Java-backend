@@ -11,7 +11,6 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.rowset.serial.SerialBlob;
-import javax.sql.rowset.serial.SerialException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -19,12 +18,10 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ImageService implements  IImageService {
+public class ImageService implements IImageService {
 
     private final ImageRepository imageRepository;
     private IProductService productService;
-
-
 
     @Override
     public Image getImageById(Long id) {
@@ -35,10 +32,10 @@ public class ImageService implements  IImageService {
 
     @Override
     public void deleteImageById(Long id) {
-        imageRepository.findById(id).ifPresentOrElse(imageRepository :: delete,
-            () -> {
-                throw new ResourceAccessException("No image found for id " + id);
-            });
+        imageRepository.findById(id).ifPresentOrElse(imageRepository::delete,
+                () -> {
+                    throw new ResourceAccessException("No image found for id " + id);
+                });
     }
 
     @Override
@@ -61,7 +58,7 @@ public class ImageService implements  IImageService {
 
                 Image savedImage = imageRepository.save(image);
 
-                savedImage.setDownloadUrl(buildDownloadPath + savedImage.getId() );
+                savedImage.setDownloadUrl(buildDownloadPath + savedImage.getId());
                 imageRepository.save(image);
 
                 ImageDto imageDto = new ImageDto();
@@ -71,8 +68,7 @@ public class ImageService implements  IImageService {
 
                 savedImageDtos.add(imageDto);
 
-
-            } catch (IOException  | SQLException e ) {
+            } catch (IOException | SQLException e) {
 
                 throw new RuntimeException(e.getMessage());
             }

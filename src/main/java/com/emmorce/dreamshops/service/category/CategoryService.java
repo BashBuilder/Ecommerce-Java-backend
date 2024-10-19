@@ -6,17 +6,16 @@ import com.emmorce.dreamshops.model.Category;
 import com.emmorce.dreamshops.repositoty.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.ResourceAccessException;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CategoryService  implements  ICategoryService
-{
+public class CategoryService implements ICategoryService {
 
     private final CategoryRepository categoryRepository;
+
     @Override
     public Category getCategoryById(Long id) {
         return categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
@@ -36,7 +35,7 @@ public class CategoryService  implements  ICategoryService
     public Category addCategory(Category category) {
         return Optional.of(category)
                 .filter(c -> !categoryRepository.existsByName(c.getName()))
-                .map(categoryRepository :: save)
+                .map(categoryRepository::save)
                 .orElseThrow(() -> new AlreadyExistsException("Category already exists"));
     }
 
@@ -53,9 +52,9 @@ public class CategoryService  implements  ICategoryService
 
     @Override
     public void deleteCategoryById(Long id) {
-        categoryRepository.findById(id).ifPresentOrElse(categoryRepository :: delete,
-            () -> {
-                throw new ResourceNotFoundException("Category not found");
-            });
+        categoryRepository.findById(id).ifPresentOrElse(categoryRepository::delete,
+                () -> {
+                    throw new ResourceNotFoundException("Category not found");
+                });
     }
 }

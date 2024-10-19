@@ -1,6 +1,7 @@
 package com.emmorce.dreamshops.controllers;
 
 import com.emmorce.dreamshops.dto.ImageDto;
+import com.emmorce.dreamshops.exceptions.ResourceNotFoundException;
 import com.emmorce.dreamshops.model.Image;
 import com.emmorce.dreamshops.response.ApiResponse;
 import com.emmorce.dreamshops.service.image.IImageService;
@@ -16,6 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLException;
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RequiredArgsConstructor
 @RestController
@@ -51,5 +55,45 @@ public class ImageController {
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+
+    @PutMapping("/image/{imageId}/update")
+    public ResponseEntity<ApiResponse> updateImage(@PathVariable Long imageId, @RequestBody MultipartFile file) {
+        try {
+            Image image = imageService.getImageById(imageId);
+            if (image != null) {
+                imageService.updateImage(file, imageId);
+                return ResponseEntity.ok(new ApiResponse("Update success", image));
+            }
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity
+                    .status(NOT_FOUND)
+                    .body(new ApiResponse(e.getMessage(), null));
+        }
+
+        return  ResponseEntity
+                .status(INTERNAL_SERVER_ERROR)
+                .body(new ApiResponse("update failed", INTERNAL_SERVER_ERROR));
+    }
+
+
+    @DeleteMapping("/image/{imageId}/delete")
+    public ResponseEntity<ApiResponse> deleteImage(@PathVariable Long imageId) {
+        try {
+            Image image = imageService.getImageById(imageId);
+            if (image != null) {
+                imageService.deleteImageById(imageId);
+                return ResponseEntity.ok(new ApiResponse("delete success", image));
+            }
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity
+                    .status(NOT_FOUND)
+                    .body(new ApiResponse(e.getMessage(), null));
+        }
+
+        return  ResponseEntity
+                .status(INTERNAL_SERVER_ERROR)
+                .body(new ApiResponse("delete failed", INTERNAL_SERVER_ERROR));
     }
 }

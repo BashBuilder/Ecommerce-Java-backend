@@ -1,6 +1,6 @@
 package com.emmorce.dreamshops.service.product;
 
-import com.emmorce.dreamshops.exceptions.ProductNotFoundException;
+import com.emmorce.dreamshops.exceptions.ResourceNotFoundException;
 import com.emmorce.dreamshops.model.Category;
 import com.emmorce.dreamshops.model.Product;
 import com.emmorce.dreamshops.repositoty.CategoryRepository;
@@ -45,12 +45,12 @@ public class ProductService implements IProductService {
 
     @Override
     public Product getProductById(long id) {
-        return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product not found"));
+        return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
     }
 
     @Override
     public void deleteProductById(long id) {
-        productRepository.findById(id).ifPresentOrElse(productRepository::delete, () -> new ProductNotFoundException("Product not found"));
+        productRepository.findById(id).ifPresentOrElse(productRepository::delete, () -> new ResourceNotFoundException("Product not found"));
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ProductService implements IProductService {
         return productRepository.findById(productId)
                 .map(existingProduct -> updateExistingProduct(existingProduct, request))
                 .map(productRepository :: save)
-                .orElseThrow( () -> new ProductNotFoundException("Product not found") );
+                .orElseThrow( () -> new ResourceNotFoundException("Product not found") );
     }
 
     private Product updateExistingProduct(Product existingProduct, ProductUpdateRequest request) {

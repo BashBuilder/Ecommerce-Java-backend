@@ -21,7 +21,6 @@ public class ProductService implements IProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     
-//tem0
 
     @Override
     public Product addProduct(AddProductRequest request) {
